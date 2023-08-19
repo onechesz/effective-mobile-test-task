@@ -79,10 +79,4 @@ public class AuthController {
 
         return Map.of("JWT", jwtUtil.generateToken(authenticationDTO.getName()));
     }
-
-    @Contract("_ -> new")
-    @ExceptionHandler
-    private @NotNull ResponseEntity<ExceptionResponse> userNotAuthenticatedHandler(@NotNull UserNotAuthenticatedException userNotAuthenticatedException) {
-        return new ResponseEntity<>(new ExceptionResponse(userNotAuthenticatedException.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
-    }
 }
