@@ -64,7 +64,7 @@ public class AuthController {
     }
 
     @Contract("_ -> new")
-    @ExceptionHandler
+    @ExceptionHandler(value = UserNotRegisteredException.class)
     private @NotNull ResponseEntity<ExceptionResponse> userNotRegisteredHandler(@NotNull UserNotRegisteredException userNotRegisteredException) {
         return new ResponseEntity<>(new ExceptionResponse(userNotRegisteredException.getMessage(), System.currentTimeMillis()), HttpStatus.BAD_REQUEST);
     }

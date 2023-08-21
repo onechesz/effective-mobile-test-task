@@ -6,12 +6,15 @@ import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.NotNull;
 
 public class UserDTO {
+    @jakarta.validation.constraints.NotNull(message = "не должно отсутствовать")
     @Size(min = 4, max = 32, message = "должно быть длиной от 4-х до 32-х символов")
     private String name;
 
+    @jakarta.validation.constraints.NotNull(message = "не должен отсутствовать")
     @Email(message = "должен соответствовать структуре e-mail")
     private String email;
 
+    @jakarta.validation.constraints.NotNull(message = "не должен отсутствовать")
     @Size(min = 7, max = 32, message = "должен быть длиной от 7-ми до 32-х символов")
     private String password;
 

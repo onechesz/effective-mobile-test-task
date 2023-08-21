@@ -2,6 +2,8 @@ package com.github.onechesz.effectivemobiletesttask.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "\"user\"")
 public class UserEntity {
@@ -21,6 +23,9 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private char[] password;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<PostEntity> postEntityList;
 
     public UserEntity() {
 
@@ -71,5 +76,13 @@ public class UserEntity {
 
     public void setPassword(char[] password) {
         this.password = password;
+    }
+
+    public List<PostEntity> getPostEntityList() {
+        return postEntityList;
+    }
+
+    public void setPostEntityList(List<PostEntity> postEntityList) {
+        this.postEntityList = postEntityList;
     }
 }

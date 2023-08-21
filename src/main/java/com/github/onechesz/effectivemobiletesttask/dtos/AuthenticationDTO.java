@@ -1,8 +1,12 @@
 package com.github.onechesz.effectivemobiletesttask.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 public class AuthenticationDTO {
+    @NotNull(message = "не должно отсутствовать")
     private String name;
 
+    @NotNull(message = "не должен отсутствовать")
     private String password;
 
     public AuthenticationDTO() {
