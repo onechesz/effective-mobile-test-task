@@ -1,6 +1,7 @@
 package com.github.onechesz.effectivemobiletesttask.controllers;
 
-import com.github.onechesz.effectivemobiletesttask.dtos.PostDTO;
+import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOI;
+import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.UserDetails;
 import com.github.onechesz.effectivemobiletesttask.services.PostService;
 import com.github.onechesz.effectivemobiletesttask.utils.*;
@@ -13,12 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/posts")
@@ -30,7 +29,7 @@ public class PostController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<HttpStatus> performCreation(HttpServletRequest httpServletRequest, @Valid PostDTO postDTO, @NotNull BindingResult bindingResult) throws IOException {
+    public ResponseEntity<HttpStatus> performCreation(HttpServletRequest httpServletRequest, @Valid PostDTOI postDTOI, @NotNull BindingResult bindingResult) throws IOException {
         authenticationCheck(httpServletRequest);
 
         if (bindingResult.hasErrors()) {
@@ -44,7 +43,7 @@ public class PostController {
             throw new PostNotCreatedException(errorMessagesBuilder.toString());
         }
 
-        postService.create(postDTO, ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity());
+        postService.create(postDTOI, ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity());
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
@@ -77,6 +76,17 @@ public class PostController {
     @ExceptionHandler(value = FileSizeTooLargeException.class)
     private @NotNull ResponseEntity<ExceptionResponse> fileSizeTooLargeExceptionHandler(@NotNull FileSizeTooLargeException fileSizeTooLargeException) {
         return new ResponseEntity<>(new ExceptionResponse(fileSizeTooLargeException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping(value = "/{id}")
+    public List<PostDTOO> viewByUser(@PathVariable(name = "id") int id) {
+        return postService.findByUserId(id);
+    }
+
+    @Contract("_ -> new")
+    @ExceptionHandler
+    private @NotNull ResponseEntity<ExceptionResponse> userNotFoundExceptionHandler(@NotNull UserNotFoundException userNotFoundException) {
+        return new ResponseEntity<>(new ExceptionResponse(userNotFoundException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
     }
 
     private void authenticationCheck(@NotNull HttpServletRequest httpServletRequest) {

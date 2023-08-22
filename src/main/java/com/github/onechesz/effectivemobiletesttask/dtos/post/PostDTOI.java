@@ -1,10 +1,9 @@
-package com.github.onechesz.effectivemobiletesttask.dtos;
+package com.github.onechesz.effectivemobiletesttask.dtos.post;
 
 import com.github.onechesz.effectivemobiletesttask.entities.PictureEntity;
 import com.github.onechesz.effectivemobiletesttask.entities.PostEntity;
 import com.github.onechesz.effectivemobiletesttask.entities.UserEntity;
 import com.github.onechesz.effectivemobiletesttask.services.PostService;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PostDTO {
+public class PostDTOI {
     public final static String POST_IMAGES_PATH = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images";
 
     @jakarta.validation.constraints.NotNull(message = "не должно отсутствовать")
@@ -26,13 +25,19 @@ public class PostDTO {
 
     private List<MultipartFile> pictureList;
 
-    public PostDTO() {
+    public PostDTOI() {
 
     }
 
+    public PostDTOI(String title, String text, List<MultipartFile> pictureList) {
+        this.title = title;
+        this.text = text;
+        this.pictureList = pictureList;
+    }
+
     @Contract("_, _ -> new")
-    public static @NotNull PostEntity convertToPostEntity(@NotNull PostDTO postDTO, UserEntity userEntity) {
-        return new PostEntity(postDTO.title, postDTO.text, LocalDateTime.now(), userEntity, postDTO.pictureList.stream().map(multipartFile -> {
+    public static @NotNull PostEntity convertToPostEntity(@NotNull PostDTOI postDTOI, UserEntity userEntity) {
+        return new PostEntity(postDTOI.title, postDTOI.text, LocalDateTime.now(), userEntity, postDTOI.pictureList.stream().map(multipartFile -> {
             String newFileName = PostService.generateRandomName() + PostService.getFileExtensionAndCheckIt(multipartFile);
 
             return new PictureEntity(newFileName, Paths.get(POST_IMAGES_PATH, newFileName).toString(), multipartFile.getContentType(), multipartFile.getSize());

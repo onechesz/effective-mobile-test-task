@@ -1,6 +1,9 @@
 package com.github.onechesz.effectivemobiletesttask.entities;
 
+import com.github.onechesz.effectivemobiletesttask.dtos.picture.PictureDTOO;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 @Entity
 @Table(name = "picture")
@@ -35,6 +38,11 @@ public class PictureEntity {
         this.path = path;
         this.type = type;
         this.size = size;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull PictureDTOO convertToPictureDTOO(@NotNull PictureEntity pictureEntity) {
+        return new PictureDTOO(pictureEntity.name, "http://localhost:8080/pictures/" + pictureEntity.id, pictureEntity.type, pictureEntity.size);
     }
 
     public int getId() {

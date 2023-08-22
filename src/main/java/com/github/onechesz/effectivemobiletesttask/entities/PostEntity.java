@@ -1,6 +1,9 @@
 package com.github.onechesz.effectivemobiletesttask.entities;
 
+import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +29,7 @@ public class PostEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PictureEntity> pictureEntityList;
 
     public PostEntity() {
@@ -39,6 +42,11 @@ public class PostEntity {
         this.created = created;
         this.userEntity = userEntity;
         this.pictureEntityList = pictureEntityList;
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull PostDTOO convertToPostDTOO(@NotNull PostEntity postEntity) {
+        return new PostDTOO(postEntity.title, postEntity.text, postEntity.getPictureEntityList().stream().map(PictureEntity::convertToPictureDTOO).toList());
     }
 
     public int getId() {
