@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -21,6 +22,16 @@ public class PictureService {
 
     public PictureService(PictureRepository pictureRepository) {
         this.pictureRepository = pictureRepository;
+    }
+
+    public static @NotNull String generateRandomName() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder stringBuilder = new StringBuilder(60);
+
+        for (int i = 0; i < 60; i++)
+            stringBuilder.append(characters.charAt(ThreadLocalRandom.current().nextInt(characters.length())));
+
+        return stringBuilder.toString();
     }
 
     public Optional<PictureEntity> findById(int id) {

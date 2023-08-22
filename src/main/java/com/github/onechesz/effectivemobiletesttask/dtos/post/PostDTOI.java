@@ -3,6 +3,7 @@ package com.github.onechesz.effectivemobiletesttask.dtos.post;
 import com.github.onechesz.effectivemobiletesttask.entities.PictureEntity;
 import com.github.onechesz.effectivemobiletesttask.entities.PostEntity;
 import com.github.onechesz.effectivemobiletesttask.entities.UserEntity;
+import com.github.onechesz.effectivemobiletesttask.services.PictureService;
 import com.github.onechesz.effectivemobiletesttask.services.PostService;
 import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.Contract;
@@ -38,7 +39,7 @@ public class PostDTOI {
     @Contract("_, _ -> new")
     public static @NotNull PostEntity convertToPostEntity(@NotNull PostDTOI postDTOI, UserEntity userEntity) {
         return new PostEntity(postDTOI.title, postDTOI.text, LocalDateTime.now(), userEntity, postDTOI.pictureList.stream().map(multipartFile -> {
-            String newFileName = PostService.generateRandomName() + PostService.getFileExtensionAndCheckIt(multipartFile);
+            String newFileName = PictureService.generateRandomName() + PostService.getFileExtensionAndCheckIt(multipartFile);
 
             return new PictureEntity(newFileName, Paths.get(POST_IMAGES_PATH, newFileName).toString(), multipartFile.getContentType(), multipartFile.getSize());
         }).toList());

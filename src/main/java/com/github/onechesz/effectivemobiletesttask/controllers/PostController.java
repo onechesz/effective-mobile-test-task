@@ -55,12 +55,6 @@ public class PostController {
     }
 
     @Contract("_ -> new")
-    @ExceptionHandler(value = IOException.class)
-    private @NotNull ResponseEntity<ExceptionResponse> IOExceptionHandler(@NotNull IOException ioException) {
-        return new ResponseEntity<>(new ExceptionResponse(ioException.getMessage(), System.currentTimeMillis()), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Contract("_ -> new")
     @ExceptionHandler(value = InvalidFileTypeException.class)
     private @NotNull ResponseEntity<ExceptionResponse> invalidFileTypeExceptionHandler(@NotNull InvalidFileTypeException invalidFileTypeException) {
         return new ResponseEntity<>(new ExceptionResponse(invalidFileTypeException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
@@ -87,6 +81,32 @@ public class PostController {
     @ExceptionHandler(value = UserNotFoundException.class)
     private @NotNull ResponseEntity<ExceptionResponse> userNotFoundExceptionHandler(@NotNull UserNotFoundException userNotFoundException) {
         return new ResponseEntity<>(new ExceptionResponse(userNotFoundException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value = "/{id}/update")
+    public ResponseEntity<HttpStatus> performUpdating(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id, @Valid PostDTOI postDTOI, @NotNull BindingResult bindingResult) {
+        authenticationCheck(httpServletRequest);
+
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessagesBuilder = new StringBuilder();
+
+            for (FieldError fieldError : bindingResult.getFieldErrors())
+                errorMessagesBuilder.append(fieldError.getField()).append(" — ").append(fieldError.getDefaultMessage()).append(", ");
+
+            errorMessagesBuilder.setLength(errorMessagesBuilder.length() - 2);
+
+            throw new PostNotUpdatedException(errorMessagesBuilder.toString());
+        }
+
+        postService.update(postDTOI, ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity(), id);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+    @Contract("_ -> new")
+    @ExceptionHandler(value = PostNotUpdatedException.class)
+    private @NotNull ResponseEntity<ExceptionResponse> postNotUpdatedExceptionHandler(@NotNull PostNotUpdatedException postNotUpdatedException) {
+        return new ResponseEntity<>(new ExceptionResponse(postNotUpdatedException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
     }
 
     private void authenticationCheck(@NotNull HttpServletRequest httpServletRequest) {

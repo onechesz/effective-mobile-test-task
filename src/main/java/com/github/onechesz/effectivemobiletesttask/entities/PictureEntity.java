@@ -40,6 +40,14 @@ public class PictureEntity {
         this.size = size;
     }
 
+    public PictureEntity(String name, String path, String type, long size, PostEntity postEntity) {
+        this.name = name;
+        this.path = path;
+        this.type = type;
+        this.size = size;
+        this.postEntity = postEntity;
+    }
+
     @Contract(value = "_ -> new", pure = true)
     public static @NotNull PictureDTOO convertToPictureDTOO(@NotNull PictureEntity pictureEntity) {
         return new PictureDTOO(pictureEntity.name, "http://localhost:8080/pictures/" + pictureEntity.id, pictureEntity.type, pictureEntity.size);
