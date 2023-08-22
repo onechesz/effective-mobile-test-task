@@ -98,17 +98,7 @@ public class PostService {
                 postEntity.setTitle(postDTOI.getTitle());
                 postEntity.setText(postDTOI.getText());
                 pictureRepository.deleteAllByPostEntity(postEntity);
-
-                for (PictureEntity pictureEntity : postEntity.getPictureEntityList())
-                    try {
-                        Files.delete(Path.of(pictureEntity.getPath()));
-                    } catch (NoSuchFileException noSuchFileException) {
-                        throw new FileNotDeletedException("файл по такому пути не найден");
-                    } catch (DirectoryNotEmptyException directoryNotEmptyException) {
-                        throw new FileNotDeletedException("директория не пустая");
-                    } catch (IOException ioException) {
-                        throw new FileNotDeletedException("внутренняя ошибка удаления файла");
-                    }
+                deletePicturesFiles(postEntity);
 
                 List<PictureEntity> pictureEntityList = new ArrayList<>();
                 List<MultipartFile> multipartFileList = postDTOI.getPictureList();
@@ -138,5 +128,33 @@ public class PostService {
                 throw new FileNotCreatedException("внутренняя ошибка при сохранении изображения");
             }
         }
+    }
+
+    public void delete(int id, UserEntity userEntity) {
+        Optional<PostEntity> postEntityOptional = postRepository.findById(id);
+
+        if (postEntityOptional.isPresent()) {
+            PostEntity postEntity = postEntityOptional.get();
+
+            if (postEntity.getUserEntity().getId() == userEntity.getId()) {
+                postRepository.delete(postEntity);
+                deletePicturesFiles(postEntity);
+            } else
+                throw new PostNotDeletedException("автор поста не совпадает с тем, кто пытается его удалить");
+        } else
+            throw new PostNotDeletedException("пост с таким идентификатором не найден");
+    }
+
+    private void deletePicturesFiles(@NotNull PostEntity postEntity) {
+        for (PictureEntity pictureEntity : postEntity.getPictureEntityList())
+            try {
+                Files.delete(Path.of(pictureEntity.getPath()));
+            } catch (NoSuchFileException noSuchFileException) {
+                throw new FileNotDeletedException("внутренняя ошибка удаления файла: файл по такому пути не найден");
+            } catch (DirectoryNotEmptyException directoryNotEmptyException) {
+                throw new FileNotDeletedException("внутренняя ошибка удаления файла: директория не пустая");
+            } catch (IOException ioException) {
+                throw new FileNotDeletedException("внутренняя ошибка удаления файла");
+            }
     }
 }

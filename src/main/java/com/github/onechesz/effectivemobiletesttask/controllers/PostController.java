@@ -109,6 +109,21 @@ public class PostController {
         return new ResponseEntity<>(new ExceptionResponse(postNotUpdatedException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<HttpStatus> performDeleting(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
+        authenticationCheck(httpServletRequest);
+
+        postService.delete(id, ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity());
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+    @Contract("_ -> new")
+    @ExceptionHandler(value = PostNotDeletedException.class)
+    private @NotNull ResponseEntity<ExceptionResponse> postNotDeletedExceptionHandler(@NotNull PostNotDeletedException postNotDeletedException) {
+        return new ResponseEntity<>(new ExceptionResponse(postNotDeletedException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
+    }
+
     private void authenticationCheck(@NotNull HttpServletRequest httpServletRequest) {
         UserNotAuthenticatedException userNotAuthenticatedException = (UserNotAuthenticatedException) httpServletRequest.getAttribute("exception");
 
