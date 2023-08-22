@@ -84,7 +84,7 @@ public class PostController {
     }
 
     @Contract("_ -> new")
-    @ExceptionHandler
+    @ExceptionHandler(value = UserNotFoundException.class)
     private @NotNull ResponseEntity<ExceptionResponse> userNotFoundExceptionHandler(@NotNull UserNotFoundException userNotFoundException) {
         return new ResponseEntity<>(new ExceptionResponse(userNotFoundException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
     }
