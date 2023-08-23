@@ -48,8 +48,8 @@ public class FriendService {
 
             friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestEntity -> {
                 friendRequestRepository.delete(friendRequestEntity);
-                makeFriends(userId, id);
                 followRepository.save(new FollowEntity(new FollowId(userId, id)));
+                makeFriends(userId, id);
             }, () -> {
                 friendRequestRepository.save(new FriendRequestEntity(new FriendRequestId(userId, id)));
                 followRepository.save(new FollowEntity(new FollowId(userId, id)));
@@ -70,6 +70,21 @@ public class FriendService {
             followRepository.findById(new FollowId(userId, id)).ifPresent(followRepository::delete);
         }, () -> {
             throw new FriendRequestException("нет запроса на подписку на пользователя с таким идентификатором");
+        });
+    }
+
+    public void accept(@NotNull UserEntity userEntity, int id) {
+        int userId = userEntity.getId();
+
+        if (userId == id)
+            throw new FriendRequestException("нельзя принять запрос на дружбу от самого себя");
+
+        friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestEntity -> {
+            friendRequestRepository.delete(friendRequestEntity);
+            followRepository.save(new FollowEntity(new FollowId(userId, id)));
+            makeFriends(userId, id);
+        }, () -> {
+            throw new FriendRequestException("не существует входящего запроса от пользователя с таким идентификатором");
         });
     }
 

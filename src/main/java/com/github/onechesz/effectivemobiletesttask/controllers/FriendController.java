@@ -41,6 +41,15 @@ public class FriendController {
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 
+    @PostMapping(path = "/accept/{id}")
+    public ResponseEntity<HttpStatus> performAccepting(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
+        authenticationCheck(httpServletRequest);
+
+        friendService.accept(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity(), id);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
     @Contract("_ -> new")
     @ExceptionHandler(value = FriendRequestException.class)
     private @NotNull ResponseEntity<ExceptionResponse> friendRequestExceptionHandler(@NotNull FriendRequestException friendRequestException) {
