@@ -1,6 +1,7 @@
 package com.github.onechesz.effectivemobiletesttask.controllers;
 
 import com.github.onechesz.effectivemobiletesttask.dtos.message.MessageDTOI;
+import com.github.onechesz.effectivemobiletesttask.dtos.message.MessageDTOO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.UserDetails;
 import com.github.onechesz.effectivemobiletesttask.services.MessageService;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
@@ -15,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.github.onechesz.effectivemobiletesttask.controllers.AuthController.authenticationCheck;
 
@@ -51,5 +54,12 @@ public class MessageController {
     @ExceptionHandler(value = MessageSendException.class)
     private @NotNull ResponseEntity<ExceptionResponse> messageSendExceptionHandler(@NotNull MessageSendException messageSendException) {
         return new ResponseEntity<>(new ExceptionResponse(messageSendException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping(path = "/{id}")
+    public List<MessageDTOO> viewAllWithUser(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
+        authenticationCheck(httpServletRequest);
+
+        return messageService.findAllWithUser(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity(), id);
     }
 }

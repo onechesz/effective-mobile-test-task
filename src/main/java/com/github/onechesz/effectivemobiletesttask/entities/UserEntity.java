@@ -1,5 +1,6 @@
 package com.github.onechesz.effectivemobiletesttask.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class UserEntity {
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private int id;
 
     @Column(name = "role", nullable = false)
@@ -19,18 +21,23 @@ public class UserEntity {
     private String name;
 
     @Column(name = "email", unique = true, nullable = false)
+    @JsonIgnore
     private String email;
 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private char[] password;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<PostEntity> postEntityList;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<MessageEntity> sentMessagesList;
 
     @OneToMany(mappedBy = "targetEntity", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<MessageEntity> receivedMessagesList;
 
     public UserEntity() {

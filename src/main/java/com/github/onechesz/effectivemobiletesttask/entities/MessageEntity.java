@@ -1,6 +1,9 @@
 package com.github.onechesz.effectivemobiletesttask.entities;
 
+import com.github.onechesz.effectivemobiletesttask.dtos.message.MessageDTOO;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -35,6 +38,11 @@ public class MessageEntity {
         this.targetEntity = targetEntity;
         this.text = text;
         this.sendTime = sendTime;
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull MessageDTOO convertToMessageDTOO(@NotNull MessageEntity messageEntity) {
+        return new MessageDTOO(messageEntity.userEntity, messageEntity.targetEntity, messageEntity.text, messageEntity.sendTime);
     }
 
     public int getId() {
