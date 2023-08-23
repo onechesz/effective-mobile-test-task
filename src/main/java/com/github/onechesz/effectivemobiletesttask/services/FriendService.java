@@ -46,6 +46,10 @@ public class FriendService {
                 throw new FriendRequestException("вы уже дружите с этим пользователем");
             });
 
+            followRepository.findById(new FollowId(userId, id)).ifPresent(followEntity -> {
+                throw new FriendRequestException("вы уже отправляли запрос на подписку этому пользователю, но он её отклонил");
+            });
+
             friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestEntity -> {
                 friendRequestRepository.delete(friendRequestEntity);
                 followRepository.save(new FollowEntity(new FollowId(userId, id)));
@@ -81,9 +85,24 @@ public class FriendService {
 
         friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestEntity -> {
             friendRequestRepository.delete(friendRequestEntity);
-            followRepository.save(new FollowEntity(new FollowId(userId, id)));
+
+            FollowId followId = new FollowId(userId, id);
+
+            followRepository.findById(followId).ifPresentOrElse(followEntity -> {
+            }, () -> followRepository.save(new FollowEntity(followId)));
             makeFriends(userId, id);
         }, () -> {
+            throw new FriendRequestException("не существует входящего запроса от пользователя с таким идентификатором");
+        });
+    }
+
+    public void reject(@NotNull UserEntity userEntity, int id) {
+        int userId = userEntity.getId();
+
+        if (userId == id)
+            throw new FriendRequestException("нельзя отклонить запрос на дружбу от самого себя");
+
+        friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestRepository::delete, () -> {
             throw new FriendRequestException("не существует входящего запроса от пользователя с таким идентификатором");
         });
     }
