@@ -8,7 +8,7 @@ import com.github.onechesz.effectivemobiletesttask.entities.UserEntity;
 import com.github.onechesz.effectivemobiletesttask.repostitories.PictureRepository;
 import com.github.onechesz.effectivemobiletesttask.repostitories.PostRepository;
 import com.github.onechesz.effectivemobiletesttask.repostitories.UserRepository;
-import com.github.onechesz.effectivemobiletesttask.utils.*;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

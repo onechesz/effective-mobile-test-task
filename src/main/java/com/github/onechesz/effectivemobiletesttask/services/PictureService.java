@@ -2,7 +2,7 @@ package com.github.onechesz.effectivemobiletesttask.services;
 
 import com.github.onechesz.effectivemobiletesttask.entities.PictureEntity;
 import com.github.onechesz.effectivemobiletesttask.repostitories.PictureRepository;
-import com.github.onechesz.effectivemobiletesttask.utils.PictureNotLoadedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.PictureNotLoadedException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

@@ -4,7 +4,7 @@ import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOI;
 import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.UserDetails;
 import com.github.onechesz.effectivemobiletesttask.services.PostService;
-import com.github.onechesz.effectivemobiletesttask.utils.*;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Contract;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.github.onechesz.effectivemobiletesttask.controllers.AuthController.authenticationCheck;
 
 @RestController
 @RequestMapping(path = "/posts")
@@ -122,12 +124,5 @@ public class PostController {
     @ExceptionHandler(value = PostNotDeletedException.class)
     private @NotNull ResponseEntity<ExceptionResponse> postNotDeletedExceptionHandler(@NotNull PostNotDeletedException postNotDeletedException) {
         return new ResponseEntity<>(new ExceptionResponse(postNotDeletedException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    private void authenticationCheck(@NotNull HttpServletRequest httpServletRequest) {
-        UserNotAuthenticatedException userNotAuthenticatedException = (UserNotAuthenticatedException) httpServletRequest.getAttribute("exception");
-
-        if (userNotAuthenticatedException != null)
-            throw userNotAuthenticatedException;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.onechesz.effectivemobiletesttask.dtos;
+package com.github.onechesz.effectivemobiletesttask.dtos.user;
 
 import com.github.onechesz.effectivemobiletesttask.entities.UserEntity;
 import jakarta.validation.constraints.Email;

@@ -1,13 +1,14 @@
 package com.github.onechesz.effectivemobiletesttask.controllers;
 
-import com.github.onechesz.effectivemobiletesttask.dtos.AuthenticationDTO;
-import com.github.onechesz.effectivemobiletesttask.dtos.UserDTO;
+import com.github.onechesz.effectivemobiletesttask.dtos.authentication.AuthenticationDTO;
+import com.github.onechesz.effectivemobiletesttask.dtos.user.UserDTO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.JWTUtil;
 import com.github.onechesz.effectivemobiletesttask.services.UserService;
-import com.github.onechesz.effectivemobiletesttask.utils.ExceptionResponse;
-import com.github.onechesz.effectivemobiletesttask.utils.UserNotAuthenticatedException;
-import com.github.onechesz.effectivemobiletesttask.utils.UserNotRegisteredException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotAuthenticatedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotRegisteredException;
 import com.github.onechesz.effectivemobiletesttask.validators.UserValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,13 @@ public class AuthController {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+    }
+
+    public static void authenticationCheck(@NotNull HttpServletRequest httpServletRequest) {
+        UserNotAuthenticatedException userNotAuthenticatedException = (UserNotAuthenticatedException) httpServletRequest.getAttribute("exception");
+
+        if (userNotAuthenticatedException != null)
+            throw userNotAuthenticatedException;
     }
 
     @PostMapping(path = "/register")

@@ -2,9 +2,9 @@ package com.github.onechesz.effectivemobiletesttask.controllers;
 
 import com.github.onechesz.effectivemobiletesttask.entities.PictureEntity;
 import com.github.onechesz.effectivemobiletesttask.services.PictureService;
-import com.github.onechesz.effectivemobiletesttask.utils.ExceptionResponse;
-import com.github.onechesz.effectivemobiletesttask.utils.PictureNotFoundException;
-import com.github.onechesz.effectivemobiletesttask.utils.PictureNotLoadedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.PictureNotFoundException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.PictureNotLoadedException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;

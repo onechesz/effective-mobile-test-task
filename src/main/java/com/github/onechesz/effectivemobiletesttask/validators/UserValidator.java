@@ -1,6 +1,6 @@
 package com.github.onechesz.effectivemobiletesttask.validators;
 
-import com.github.onechesz.effectivemobiletesttask.dtos.UserDTO;
+import com.github.onechesz.effectivemobiletesttask.dtos.user.UserDTO;
 import com.github.onechesz.effectivemobiletesttask.repostitories.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.github.onechesz.effectivemobiletesttask.utils;
+package com.github.onechesz.effectivemobiletesttask.utils.exceptions;
 
 public class FileNotDeletedException extends RuntimeException {
     public FileNotDeletedException(String message) {

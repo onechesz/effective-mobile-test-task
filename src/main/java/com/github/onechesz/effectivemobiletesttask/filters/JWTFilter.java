@@ -3,7 +3,7 @@ package com.github.onechesz.effectivemobiletesttask.filters;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.github.onechesz.effectivemobiletesttask.secutiry.JWTUtil;
 import com.github.onechesz.effectivemobiletesttask.services.UserDetailsService;
-import com.github.onechesz.effectivemobiletesttask.utils.UserNotAuthenticatedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotAuthenticatedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -2,7 +2,7 @@ package com.github.onechesz.effectivemobiletesttask.services;
 
 import com.github.onechesz.effectivemobiletesttask.entities.UserEntity;
 import com.github.onechesz.effectivemobiletesttask.repostitories.UserRepository;
-import com.github.onechesz.effectivemobiletesttask.utils.ExceptionResponse;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
 package com.github.onechesz.effectivemobiletesttask.controllers;
 
-import com.github.onechesz.effectivemobiletesttask.utils.ExceptionResponse;
-import com.github.onechesz.effectivemobiletesttask.utils.FileNotCreatedException;
-import com.github.onechesz.effectivemobiletesttask.utils.FileNotDeletedException;
-import com.github.onechesz.effectivemobiletesttask.utils.UserNotAuthenticatedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FileNotCreatedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FileNotDeletedException;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotAuthenticatedException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

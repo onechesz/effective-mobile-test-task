@@ -1,4 +1,4 @@
-package com.github.onechesz.effectivemobiletesttask.dtos;
+package com.github.onechesz.effectivemobiletesttask.dtos.authentication;
 
 import jakarta.validation.constraints.NotNull;
 
