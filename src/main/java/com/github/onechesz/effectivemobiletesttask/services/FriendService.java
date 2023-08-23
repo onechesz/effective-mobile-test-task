@@ -59,6 +59,20 @@ public class FriendService {
         });
     }
 
+    public void refuse(@NotNull UserEntity userEntity, int id) {
+        int userId = userEntity.getId();
+
+        if (userId == id)
+            throw new FriendRequestException("нельзя отказаться от подписки на самого себя");
+
+        friendRequestRepository.findById(new FriendRequestId(userId, id)).ifPresentOrElse(friendRequestEntity -> {
+            friendRequestRepository.delete(friendRequestEntity);
+            followRepository.findById(new FollowId(userId, id)).ifPresent(followRepository::delete);
+        }, () -> {
+            throw new FriendRequestException("нет запроса на подписку на пользователя с таким идентификатором");
+        });
+    }
+
     private void makeFriends(int userId, int friendId) {
         friendRepository.save(new FriendEntity(new FriendId(userId, friendId)));
         friendRepository.save(new FriendEntity(new FriendId(friendId, userId)));
