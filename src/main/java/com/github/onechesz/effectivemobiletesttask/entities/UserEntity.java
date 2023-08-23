@@ -27,6 +27,12 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<PostEntity> postEntityList;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<MessageEntity> sentMessagesList;
+
+    @OneToMany(mappedBy = "targetEntity", cascade = CascadeType.ALL)
+    private List<MessageEntity> receivedMessagesList;
+
     public UserEntity() {
 
     }
@@ -84,5 +90,21 @@ public class UserEntity {
 
     public void setPostEntityList(List<PostEntity> postEntityList) {
         this.postEntityList = postEntityList;
+    }
+
+    public List<MessageEntity> getSentMessagesList() {
+        return sentMessagesList;
+    }
+
+    public void setSentMessagesList(List<MessageEntity> sentMessagesList) {
+        this.sentMessagesList = sentMessagesList;
+    }
+
+    public List<MessageEntity> getReceivedMessagesList() {
+        return receivedMessagesList;
+    }
+
+    public void setReceivedMessagesList(List<MessageEntity> receivedMessagesList) {
+        this.receivedMessagesList = receivedMessagesList;
     }
 }
