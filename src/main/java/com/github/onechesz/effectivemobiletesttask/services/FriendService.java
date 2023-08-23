@@ -11,6 +11,7 @@ import com.github.onechesz.effectivemobiletesttask.repostitories.UserRepository;
 import com.github.onechesz.effectivemobiletesttask.utils.embeddable.FollowId;
 import com.github.onechesz.effectivemobiletesttask.utils.embeddable.FriendId;
 import com.github.onechesz.effectivemobiletesttask.utils.embeddable.FriendRequestId;
+import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FriendRemoveException;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FriendRequestException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -104,6 +105,22 @@ public class FriendService {
 
         friendRequestRepository.findById(new FriendRequestId(id, userId)).ifPresentOrElse(friendRequestRepository::delete, () -> {
             throw new FriendRequestException("не существует входящего запроса от пользователя с таким идентификатором");
+        });
+    }
+
+    public void remove(@NotNull UserEntity userEntity, int id) {
+        int userId = userEntity.getId();
+
+        if (userId == id)
+            throw new FriendRemoveException("нельзя удалить из друзей самого себя");
+
+        friendRepository.findById(new FriendId(userId, id)).ifPresentOrElse(friendEntity -> {
+            friendRepository.delete(friendEntity);
+            friendRepository.delete(new FriendEntity(new FriendId(id, userId)));
+            followRepository.delete(new FollowEntity(new FollowId(userId, id)));
+            friendRequestRepository.save(new FriendRequestEntity(new FriendRequestId(id, userId)));
+        }, () -> {
+            throw new FriendRemoveException("друг с таким идентификатором не найден");
         });
     }
 
