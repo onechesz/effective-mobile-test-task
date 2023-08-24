@@ -128,9 +128,30 @@ public class PostController {
     }
 
     @GetMapping(path = "")
-    public List<ElsePostDTO> viewFeed(HttpServletRequest httpServletRequest) {
+    public List<ElsePostDTO> viewFeed(HttpServletRequest httpServletRequest, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "size", defaultValue = "5") int size) {
         authenticationCheck(httpServletRequest);
 
-        return postService.findAllByFriends(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity());
+        StringBuilder exceptionMessagesBuilder = new StringBuilder();
+
+        if (page < 1)
+            exceptionMessagesBuilder.append("page — должна быть положительным числом, ");
+
+        if (size < 1) {
+            exceptionMessagesBuilder.append("size — должен быть положительным числом");
+
+            throw new PostsNotGetException(exceptionMessagesBuilder.toString());
+        } else if (size > 20) {
+            exceptionMessagesBuilder.append("size — максимальное количество постов на странице: 20");
+
+            throw new PostsNotGetException(exceptionMessagesBuilder.toString());
+        }
+
+        return postService.findAllByFriends(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity(), page, size);
+    }
+
+    @Contract("_ -> new")
+    @ExceptionHandler(value = PostsNotGetException.class)
+    private @NotNull ResponseEntity<ExceptionResponse> postsNotGetExceptionHandler(@NotNull PostsNotGetException postsNotGetException) {
+        return new ResponseEntity<>(new ExceptionResponse(postsNotGetException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
     }
 }

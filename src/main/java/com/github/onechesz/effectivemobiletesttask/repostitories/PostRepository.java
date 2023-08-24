@@ -14,11 +14,22 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
     List<PostEntity> findByUserEntity(UserEntity userEntity);
 
-    @Query(value = "SELECT p.id AS \"postId\", p.title AS \"title\", p.text AS \"text\", fr.name AS \"author\", p.created AS \"created\", pi.id AS \"id\", pi.name AS \"name\", pi.type AS \"type\", pi.size AS \"size\" FROM \"post\" p " +
-            "JOIN \"friend\" f ON p.user_id = f.friend_id " +
-            "JOIN \"user\" u ON u.id = f.user_id " +
-            "LEFT JOIN \"picture\" pi ON pi.post_id = p.id " +
-            "JOIN \"user\" fr ON f.friend_id = fr.id " +
-            "WHERE u.id = :userId", nativeQuery = true)
+    @Query(value =
+            "SELECT " +
+                    "p.id AS \"postId\", " +
+                    "p.title AS \"title\", " +
+                    "p.text AS \"text\", " +
+                    "fr.name AS \"author\", " +
+                    "p.created AS \"created\", " +
+                    "pi.id AS \"id\", " +
+                    "pi.name AS \"name\", " +
+                    "pi.type AS \"type\", " +
+                    "pi.size AS \"size\" " +
+                    "FROM \"post\" p " +
+                    "JOIN \"friend\" f ON p.user_id = f.friend_id " +
+                    "JOIN \"user\" u ON u.id = f.user_id " +
+                    "LEFT JOIN \"picture\" pi ON pi.post_id = p.id " +
+                    "JOIN \"user\" fr ON f.friend_id = fr.id " +
+                    "WHERE u.id = :userId ", nativeQuery = true)
     List<ElsePostDTOProjection> findAllByFriends(@Param(value = "userId") int userId);
 }

@@ -161,7 +161,7 @@ public class PostService {
             }
     }
 
-    public List<ElsePostDTO> findAllByFriends(@NotNull UserEntity userEntity) {
+    public List<ElsePostDTO> findAllByFriends(@NotNull UserEntity userEntity, int page, int size) {
         List<ElsePostDTOProjection> elsePostDTOProjectionList = postRepository.findAllByFriends(userEntity.getId());
         List<ElsePostDTO> elsePostDTOList = new ArrayList<>();
 
@@ -191,6 +191,17 @@ public class PostService {
             }
         }
 
-        return elsePostDTOList;
+        page -= 1;
+        int elsePostDtoSize = elsePostDTOList.size();
+
+        if (page * size < elsePostDtoSize) {
+            List<ElsePostDTO> paginatedPosts = new ArrayList<>();
+
+            for (int i = page; i < Math.min(elsePostDtoSize, (page + 1) * size); i++)
+                paginatedPosts.add(elsePostDTOList.get(i));
+
+            return paginatedPosts;
+        } else
+            throw new PostsNotGetException("такой страницы не существует");
     }
 }
