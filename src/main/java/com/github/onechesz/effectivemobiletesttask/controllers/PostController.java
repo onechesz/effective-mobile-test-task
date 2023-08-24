@@ -1,5 +1,6 @@
 package com.github.onechesz.effectivemobiletesttask.controllers;
 
+import com.github.onechesz.effectivemobiletesttask.dtos.post.ElsePostDTO;
 import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOI;
 import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.UserDetails;
@@ -124,5 +125,12 @@ public class PostController {
     @ExceptionHandler(value = PostNotDeletedException.class)
     private @NotNull ResponseEntity<ExceptionResponse> postNotDeletedExceptionHandler(@NotNull PostNotDeletedException postNotDeletedException) {
         return new ResponseEntity<>(new ExceptionResponse(postNotDeletedException.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping(path = "")
+    public List<ElsePostDTO> viewFeed(HttpServletRequest httpServletRequest) {
+        authenticationCheck(httpServletRequest);
+
+        return postService.findAllByFriends(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserEntity());
     }
 }

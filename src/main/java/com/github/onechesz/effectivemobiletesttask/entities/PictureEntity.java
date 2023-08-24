@@ -33,6 +33,13 @@ public class PictureEntity {
 
     }
 
+    public PictureEntity(int id, String name, String type, long size) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.size = size;
+    }
+
     public PictureEntity(String name, String path, String type, long size) {
         this.name = name;
         this.path = path;

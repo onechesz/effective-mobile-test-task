@@ -1,5 +1,8 @@
 package com.github.onechesz.effectivemobiletesttask.services;
 
+import com.github.onechesz.effectivemobiletesttask.dtos.picture.PictureDTOO;
+import com.github.onechesz.effectivemobiletesttask.dtos.post.ElsePostDTO;
+import com.github.onechesz.effectivemobiletesttask.dtos.post.ElsePostDTOProjection;
 import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOI;
 import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import com.github.onechesz.effectivemobiletesttask.entities.PictureEntity;
@@ -156,5 +159,38 @@ public class PostService {
             } catch (IOException ioException) {
                 throw new FileNotDeletedException("внутренняя ошибка удаления файла");
             }
+    }
+
+    public List<ElsePostDTO> findAllByFriends(@NotNull UserEntity userEntity) {
+        List<ElsePostDTOProjection> elsePostDTOProjectionList = postRepository.findAllByFriends(userEntity.getId());
+        List<ElsePostDTO> elsePostDTOList = new ArrayList<>();
+
+        for (ElsePostDTOProjection elsePostDTOProjection : elsePostDTOProjectionList) {
+            if (elsePostDTOList.isEmpty()) {
+                ElsePostDTO elsePostDTO = new ElsePostDTO(elsePostDTOProjection.getPostId(), elsePostDTOProjection.getTitle(), elsePostDTOProjection.getText(), elsePostDTOProjection.getAuthor(), elsePostDTOProjection.getCreated());
+                Integer id = elsePostDTOProjection.getId();
+
+                if (id != null)
+                    elsePostDTO.getPictureDTOOList().add(new PictureDTOO(elsePostDTOProjection.getName(), "http://localhost:8080/pictures/" + id, elsePostDTOProjection.getType(), elsePostDTOProjection.getSize()));
+
+                elsePostDTOList.add(elsePostDTO);
+            } else {
+                ElsePostDTO elsePostDTO = elsePostDTOList.get(elsePostDTOList.size() - 1);
+
+                if (elsePostDTOProjection.getPostId() == elsePostDTO.getPostId())
+                    elsePostDTO.getPictureDTOOList().add(new PictureDTOO(elsePostDTOProjection.getName(), "http://localhost:8080/pictures/" + elsePostDTOProjection.getId(), elsePostDTOProjection.getType(), elsePostDTOProjection.getSize()));
+                else {
+                    elsePostDTO = new ElsePostDTO(elsePostDTOProjection.getPostId(), elsePostDTOProjection.getTitle(), elsePostDTOProjection.getText(), elsePostDTOProjection.getAuthor(), elsePostDTOProjection.getCreated());
+                    Integer id = elsePostDTOProjection.getId();
+
+                    if (id != null)
+                        elsePostDTO.getPictureDTOOList().add(new PictureDTOO(elsePostDTOProjection.getName(), "http://localhost:8080/pictures/" + id, elsePostDTOProjection.getType(), elsePostDTOProjection.getSize()));
+
+                    elsePostDTOList.add(elsePostDTO);
+                }
+            }
+        }
+
+        return elsePostDTOList;
     }
 }
