@@ -192,6 +192,7 @@ public class PostService {
         }
 
         page -= 1;
+
         int elsePostDtoSize = elsePostDTOList.size();
 
         if (page * size < elsePostDtoSize) {

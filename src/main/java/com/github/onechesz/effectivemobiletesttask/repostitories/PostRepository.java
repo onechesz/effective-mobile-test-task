@@ -30,6 +30,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
                     "JOIN \"user\" u ON u.id = f.user_id " +
                     "LEFT JOIN \"picture\" pi ON pi.post_id = p.id " +
                     "JOIN \"user\" fr ON f.friend_id = fr.id " +
-                    "WHERE u.id = :userId ", nativeQuery = true)
+                    "WHERE u.id = :userId " +
+                    "ORDER BY p.created", nativeQuery = true)
     List<ElsePostDTOProjection> findAllByFriends(@Param(value = "userId") int userId);
 }
