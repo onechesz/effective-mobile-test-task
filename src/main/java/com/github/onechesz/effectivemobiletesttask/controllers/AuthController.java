@@ -8,6 +8,12 @@ import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionRes
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotAuthenticatedException;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.UserNotRegisteredException;
 import com.github.onechesz.effectivemobiletesttask.validators.UserValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Contract;
@@ -25,6 +31,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/auth")
+@Tag(name = "Auth", description = "Авторизация и аутентификация")
 public class AuthController {
     private final UserValidator userValidator;
     private final UserService userService;
@@ -46,7 +53,12 @@ public class AuthController {
     }
 
     @PostMapping(path = "/register")
-    public Map<String, String> performRegistration(@RequestBody @Valid UserDTO userDTO, @NotNull BindingResult bindingResult) {
+    @Operation(summary = "Регистрация нового пользователя")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "JSON Web Token"),
+            @ApiResponse(responseCode = "400", description = "Ошибка при регистрации")
+    })
+    public Map<String, String> performRegistration(@RequestBody @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Данные о пользователе", required = true, content = @Content(schema = @Schema(implementation = UserDTO.class))) UserDTO userDTO, @NotNull BindingResult bindingResult) {
         checkForRegisterExceptionsAndThrow(bindingResult);
 
         userValidator.validate(userDTO, bindingResult);
@@ -78,7 +90,12 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
-    public Map<String, String> performLogin(@RequestBody @Valid @NotNull AuthenticationDTO authenticationDTO) {
+    @Operation(summary = "Вход")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "JSON Web Token"),
+            @ApiResponse(responseCode = "403", description = "Неверные данные для входа")
+    })
+    public Map<String, String> performLogin(@RequestBody @Valid @NotNull @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Данные для входа", required = true, content = @Content(schema = @Schema(implementation = AuthenticationDTO.class))) AuthenticationDTO authenticationDTO) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.getName(), authenticationDTO.getPassword()));
         } catch (BadCredentialsException badCredentialsException) {

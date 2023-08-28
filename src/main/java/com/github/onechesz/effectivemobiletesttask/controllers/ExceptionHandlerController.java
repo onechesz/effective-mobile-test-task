@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionHandlerController {
     @ExceptionHandler(value = UserNotAuthenticatedException.class)
     public ResponseEntity<ExceptionResponse> userNotAuthenticatedHandler(@NotNull UserNotAuthenticatedException userNotAuthenticatedException) {
-        return new ResponseEntity<>(new ExceptionResponse(userNotAuthenticatedException.getMessage(), System.currentTimeMillis()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(new ExceptionResponse(userNotAuthenticatedException.getMessage(), System.currentTimeMillis()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = FileNotCreatedException.class)

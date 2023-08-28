@@ -6,6 +6,12 @@ import com.github.onechesz.effectivemobiletesttask.dtos.post.PostDTOO;
 import com.github.onechesz.effectivemobiletesttask.secutiry.UserDetails;
 import com.github.onechesz.effectivemobiletesttask.services.PostService;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.Contract;
@@ -24,6 +30,7 @@ import static com.github.onechesz.effectivemobiletesttask.controllers.AuthContro
 
 @RestController
 @RequestMapping(path = "/posts")
+@Tag(name = "Posts", description = "Посты")
 public class PostController {
     private final PostService postService;
 
@@ -32,7 +39,14 @@ public class PostController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<HttpStatus> performCreation(HttpServletRequest httpServletRequest, @Valid PostDTOI postDTOI, @NotNull BindingResult bindingResult) throws IOException {
+    @Operation(summary = "Создание поста")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Успешное создание"),
+            @ApiResponse(responseCode = "400", description = "Ошибка создания"),
+            @ApiResponse(responseCode = "403", description = "Ошибка авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка с файлом")
+    })
+    public ResponseEntity<HttpStatus> performCreation(HttpServletRequest httpServletRequest, @RequestBody @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Детали поста", required = true, content = @Content(schema = @Schema(implementation = PostDTOI.class))) PostDTOI postDTOI, @NotNull BindingResult bindingResult) throws IOException {
         authenticationCheck(httpServletRequest);
 
         if (bindingResult.hasErrors()) {
@@ -76,6 +90,12 @@ public class PostController {
     }
 
     @GetMapping(value = "/{id}")
+    @Operation(summary = "Просмотр постов пользователя")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Посты"),
+            @ApiResponse(responseCode = "403", description = "Ошибка авторизации"),
+            @ApiResponse(responseCode = "404", description = "Ошибка нахождения пользователя")
+    })
     public List<PostDTOO> viewByUser(@PathVariable(name = "id") int id) {
         return postService.findByUserId(id);
     }
@@ -87,7 +107,13 @@ public class PostController {
     }
 
     @PostMapping(value = "/{id}/update")
-    public ResponseEntity<HttpStatus> performUpdating(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id, @Valid PostDTOI postDTOI, @NotNull BindingResult bindingResult) {
+    @Operation(summary = "Обновление поста")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешное обновление"),
+            @ApiResponse(responseCode = "403", description = "Ошибка авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка обновления")
+    })
+    public ResponseEntity<HttpStatus> performUpdating(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id, @RequestBody @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Детали поста", required = true, content = @Content(schema = @Schema(implementation = PostDTOI.class))) PostDTOI postDTOI, @NotNull BindingResult bindingResult) {
         authenticationCheck(httpServletRequest);
 
         if (bindingResult.hasErrors()) {
@@ -113,6 +139,12 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Удаление поста")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешное удаление"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка удаления")
+    })
     public ResponseEntity<HttpStatus> performDeleting(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
@@ -128,6 +160,12 @@ public class PostController {
     }
 
     @GetMapping(path = "")
+    @Operation(summary = "Просмотр ленты")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Посты"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка просмотра")
+    })
     public List<ElsePostDTO> viewFeed(HttpServletRequest httpServletRequest, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "size", defaultValue = "5") int size) {
         authenticationCheck(httpServletRequest);
 

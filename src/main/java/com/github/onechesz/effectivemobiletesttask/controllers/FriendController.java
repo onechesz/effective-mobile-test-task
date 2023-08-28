@@ -5,6 +5,10 @@ import com.github.onechesz.effectivemobiletesttask.services.FriendService;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.ExceptionResponse;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FriendRemoveException;
 import com.github.onechesz.effectivemobiletesttask.utils.exceptions.FriendRequestException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +21,7 @@ import static com.github.onechesz.effectivemobiletesttask.controllers.AuthContro
 
 @RestController
 @RequestMapping(path = "/friends")
+@Tag(name = "Friends", description = "Друзья")
 public class FriendController {
     private final FriendService friendService;
 
@@ -25,6 +30,12 @@ public class FriendController {
     }
 
     @PostMapping(path = "/add/{id}")
+    @Operation(summary = "Отправка запроса на дружбу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешная отправка"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка при отправке")
+    })
     public ResponseEntity<HttpStatus> performAdding(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
@@ -34,6 +45,12 @@ public class FriendController {
     }
 
     @PostMapping(path = "/refuse/{id}")
+    @Operation(summary = "Отмена исходящего запроса на дружбу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешная отмена"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка при отмене")
+    })
     public ResponseEntity<HttpStatus> performRefusing(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
@@ -43,6 +60,12 @@ public class FriendController {
     }
 
     @PostMapping(path = "/accept/{id}")
+    @Operation(summary = "Принятие входящего запроса на дружбу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешное принятие"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка при принятии")
+    })
     public ResponseEntity<HttpStatus> performAccepting(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
@@ -52,6 +75,12 @@ public class FriendController {
     }
 
     @PostMapping(path = "/reject/{id}")
+    @Operation(summary = "Отклонение входящего запроса на дружбу")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешное отклонение"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка при отклонении")
+    })
     public ResponseEntity<HttpStatus> performRejection(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
@@ -67,6 +96,12 @@ public class FriendController {
     }
 
     @PostMapping(path = "/remove/{id}")
+    @Operation(summary = "Удаление пользователя из друзей")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Успешное удаление"),
+            @ApiResponse(responseCode = "403", description = "Отсутствие авторизации"),
+            @ApiResponse(responseCode = "406", description = "Ошибка при удалении")
+    })
     public ResponseEntity<HttpStatus> performRemoving(HttpServletRequest httpServletRequest, @PathVariable(name = "id") int id) {
         authenticationCheck(httpServletRequest);
 
